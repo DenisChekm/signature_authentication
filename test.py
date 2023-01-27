@@ -193,39 +193,25 @@ optimizer = optim.RMSprop(net.parameters(), lr=1e-4, alpha=0.99, eps=1e-8, weigh
 
 def train():
     start = time.time()
-    # print("000")
     total_step = len(train_dataloader)
-    # for epoch in range(0, train_number_epochs):
     for epoch in range(train_number_epochs):
-        # for i, data in enumerate(train_dataloader, 0):
         i = 0
         for data in train_dataloader:
-            # print("100")
             img0, img1, label = data
             img0, img1, label = img0.to(device), img1.to(device), label.to(device)
 
             optimizer.zero_grad()
-            # print("300")
             output1, output2 = net(img0, img1)
-            # print("400")
             loss_contrastive = criterion(output1, output2, label)
-            # print("500")
             loss_contrastive.backward()
-            # print("600")
             optimizer.step()
             i += 1
-            # if i % 50 == 0:
-            # print("Epoch number {}\n Current loss {}\n".format(epoch, loss_contrastive.item()))
             if (i + 1) % 100 == 0:
                 print('Epoch [{}/{}], Step [{}/{}], Loss: {:.4f}, time: {}'.format(epoch + 1, train_number_epochs, i + 1, total_step, loss_contrastive.item(), time.time() - start))
-                # iteration_number += 10
-                # counter.append(iteration_number)
-                # loss_history.append(loss_contrastive.item())
     return net
 
 
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
-# Train the model
 if __name__ == '__main__':
     model = train()
     torch.save(model.state_dict(), "model.pt")
